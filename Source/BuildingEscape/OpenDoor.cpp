@@ -63,8 +63,10 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 	// if actor that opens in trig volume then open door
 	if (PressurePlate->IsOverlappingActor(ActorThatOpens)) {
 		OpenDoor();
+		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
 	}
-	else {
+	
+	if (isOpen == true && GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelay){
 		CloseDoor();
 	}
 }
