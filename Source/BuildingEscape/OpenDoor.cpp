@@ -20,14 +20,36 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AActor * Owner = GetOwner();
-	FRotator CurrentRot = Owner->GetActorRotation();
+}
 
-	CurrentRot.Yaw += 60.f;
+void UOpenDoor::OpenDoor()
+{
+	if (!isOpen) {
+		AActor * Owner = GetOwner();
+		FRotator CurrentRot = Owner->GetActorRotation();
 
-	//FRotator NewRotation = FRotator(CurrentRot.Pitch, CurrentRot.Yaw + 60.f, CurrentRot.Roll);
-	Owner->SetActorRotation(CurrentRot);
-	
+		CurrentRot.Yaw += 60.f;
+
+		//FRotator NewRotation = FRotator(CurrentRot.Pitch, CurrentRot.Yaw + 60.f, CurrentRot.Roll);
+		Owner->SetActorRotation(CurrentRot);
+
+		isOpen = true;
+	}
+}
+
+void UOpenDoor::CloseDoor()
+{
+	if (isOpen) {
+		AActor * Owner = GetOwner();
+		FRotator CurrentRot = Owner->GetActorRotation();
+
+		CurrentRot.Yaw -= 60.f;
+
+		//FRotator NewRotation = FRotator(CurrentRot.Pitch, CurrentRot.Yaw + 60.f, CurrentRot.Roll);
+		Owner->SetActorRotation(CurrentRot);
+
+		isOpen = false;
+	}
 }
 
 
@@ -36,6 +58,13 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	// ...
+	// Poll Trigger every frame
+	// if actor that opens in trig volume then open door
+	if (PressurePlate->IsOverlappingActor(ActorThatOpens)) {
+		OpenDoor();
+	}
+	else {
+		CloseDoor();
+	}
 }
 
