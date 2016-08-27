@@ -21,7 +21,13 @@ void UPositionReport::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	FString name = GetOwner()->GetName();
+
+	FString position  = GetOwner()->GetActorLocation().ToString();
+
+	UE_LOG(LogTemp, Warning, TEXT("%s is at %s"), *name, *position);
+
+	
 	
 }
 
@@ -31,6 +37,5 @@ void UPositionReport::TickComponent( float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	// ...
 }
 
