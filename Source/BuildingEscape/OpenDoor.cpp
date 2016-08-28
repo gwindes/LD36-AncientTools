@@ -29,7 +29,7 @@ void UOpenDoor::OpenDoor()
 		AActor * Owner = GetOwner();
 		FRotator CurrentRot = Owner->GetActorRotation();
 
-		CurrentRot.Yaw += 60.f;
+		CurrentRot.Yaw += OpenAngle;
 
 		//FRotator NewRotation = FRotator(CurrentRot.Pitch, CurrentRot.Yaw + 60.f, CurrentRot.Roll);
 		Owner->SetActorRotation(CurrentRot);
@@ -44,7 +44,7 @@ void UOpenDoor::CloseDoor()
 		AActor * Owner = GetOwner();
 		FRotator CurrentRot = Owner->GetActorRotation();
 
-		CurrentRot.Yaw -= 60.f;
+		CurrentRot.Yaw -= OpenAngle;
 
 		//FRotator NewRotation = FRotator(CurrentRot.Pitch, CurrentRot.Yaw + 60.f, CurrentRot.Roll);
 		Owner->SetActorRotation(CurrentRot);
