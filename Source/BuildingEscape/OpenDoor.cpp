@@ -11,7 +11,6 @@ UOpenDoor::UOpenDoor()
 	// off to improve performance if you don't need them.
 	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = true;
-
 }
 
 
@@ -19,18 +18,16 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (!PressurePlate) {
+		UE_LOG(LogTemp, Error, TEXT("Pressure Plate not found on %s"), *GetOwner()->GetName());
+	}
 }
 
 void UOpenDoor::OpenDoor()
 {
 	if (!isOpen) {
-		AActor * Owner = GetOwner();
-		FRotator CurrentRot = Owner->GetActorRotation();
-
-		CurrentRot.Yaw += OpenAngle;
-
-		//FRotator NewRotation = FRotator(CurrentRot.Pitch, CurrentRot.Yaw + 60.f, CurrentRot.Roll);
-		Owner->SetActorRotation(CurrentRot);
+		OnOpen.Broadcast();
 
 		isOpen = true;
 	}
@@ -39,13 +36,7 @@ void UOpenDoor::OpenDoor()
 void UOpenDoor::CloseDoor()
 {
 	if (isOpen) {
-		AActor * Owner = GetOwner();
-		FRotator CurrentRot = Owner->GetActorRotation();
-
-		CurrentRot.Yaw -= OpenAngle;
-
-		//FRotator NewRotation = FRotator(CurrentRot.Pitch, CurrentRot.Yaw + 60.f, CurrentRot.Roll);
-		Owner->SetActorRotation(CurrentRot);
+		OnClose.Broadcast();
 
 		isOpen = false;
 	}
@@ -59,12 +50,11 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 
 	// Poll Trigger every frame
 	// if actor that opens in trig volume then open door
-	if (GetTotalMassOfActorsOnPlate() > 30.f) {
+	if (GetTotalMassOfActorsOnPlate() > TriggerMass) {
 		OpenDoor();
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
 	}
-	
-	if (isOpen == true && GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelay){
+	else 
+	{
 		CloseDoor();
 	}
 }
@@ -73,6 +63,9 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate() {
 	float TotalMass = 0.f;
 	
 	TArray<AActor*> OverlappingActors;
+	if (!PressurePlate) {
+		return TotalMass;
+	}
 	PressurePlate->GetOverlappingActors(OverlappingActors);
 
 	for (int i = 0; i < OverlappingActors.Num(); i++) {
