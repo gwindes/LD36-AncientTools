@@ -35,5 +35,7 @@ private:
 
 	void SetupInputComponent();
 	void FindPhysicsHandleComponent();
+	FVector GetReachLineStart();
+	FVector GetReachLineEnd();
 	
 };
