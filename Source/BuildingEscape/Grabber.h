@@ -24,7 +24,8 @@ public:
 	FHitResult GetFirstPhsyicsBodyInReach();
 
 private:
-	float Reach = 100.f;
+	UPROPERTY(EditAnywhere)
+	float Reach = 150.f;
 
 	UPhysicsHandleComponent * PhysicsHandle = nullptr;
 	UInputComponent * InputComponent = nullptr;
